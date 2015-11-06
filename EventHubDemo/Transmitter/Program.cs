@@ -13,6 +13,11 @@ namespace Transmitter
 
         private static EventHubClient _eventHubClient;
 
+        /// <summary>
+        /// Transmits a value between 0 and 5000 to the Azure EventHub. 
+        /// The values are made by following a Sinus-curve for good looks, in case you want to connect them to a live PowerBI dashboard
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
 
@@ -49,10 +54,8 @@ namespace Transmitter
 
         private static void SendImportantMeasureToEventHub(ImportantMeasure measure)
         {
-            // Convert to a byte[] for the transmission
             var eventData = new EventData(measure.AsByteArray());
 
-            // Send it
             try
             {
                 _eventHubClient.Send(eventData);
