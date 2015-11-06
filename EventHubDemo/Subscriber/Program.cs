@@ -1,9 +1,6 @@
 ﻿using Microsoft.ServiceBus.Messaging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Subscriber
 {
@@ -22,24 +19,26 @@ namespace Subscriber
 
             _host.RegisterEventProcessorAsync<MyOwnEventProcessor>().Wait();
 
-            Console.WriteLine("Press any key to end the program");
+#if DEBUG
+            Trace.WriteLine("Press any key to end the program");
             Console.ReadKey();
+#endif
         }
 
         private static void InitializeEventProcessorHost()
         {
-            Console.WriteLine("Initializing EventProcessor Host");
+            Trace.WriteLine("Initializing EventProcessor Host");
 
             string hostName = CreateUniqueHostname();
 
             try
             {
                 _host = new EventProcessorHost(hostName, _eventHubPath, _consumerGroupName, _eventHubConnectionString, _storageConnectionString);
-                Console.WriteLine($"{hostName} created successfully.");
+                Trace.WriteLine($"{hostName} created successfully.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Host creation failed: {ex.Message}\n\n{ex.StackTrace.ToString()}");
+                Trace.WriteLine($"Host creation failed: {ex.Message}\n\n{ex.StackTrace.ToString()}");
                 throw;
             }
         }

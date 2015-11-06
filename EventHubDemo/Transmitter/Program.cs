@@ -1,7 +1,7 @@
 ﻿using Domain;
 using Microsoft.ServiceBus.Messaging;
 using System;
-
+using System.Diagnostics;
 
 namespace Transmitter
 {
@@ -24,7 +24,7 @@ namespace Transmitter
                 ImportantMeasure measure = CreateImportantMeasure(degree);
                 SendImportantMeasureToEventHub(measure);
 
-                Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss")}: Transmitted [{measure.ImportantValue.ToString("0.00")}]");
+                Trace.WriteLine($"{DateTime.Now.ToString("HH:mm:ss")}: Transmitted [{measure.ImportantValue.ToString("0.00")}]");
 
                 if (++degree >= 360)
                     degree = 0;
@@ -33,15 +33,15 @@ namespace Transmitter
 
         private static void InitializeEventHubClient()
         {
-            Console.WriteLine("Initializing EventHub Client");
+            Trace.WriteLine("Initializing EventHub Client");
             try
             {
                 _eventHubClient = EventHubClient.CreateFromConnectionString(_eventHubConnectionstring, _eventHubPath);
-                Console.WriteLine("Initialization complete");
+                Trace.WriteLine("Initialization complete");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Initialization Failed: {ex.Message}\n\n{ex.StackTrace.ToString()}");
+                Trace.WriteLine($"Initialization Failed: {ex.Message}\n\n{ex.StackTrace.ToString()}");
                 throw;
             }
 
@@ -59,7 +59,7 @@ namespace Transmitter
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"ERROR SENDING: {ex.Message}\n\n{ex.StackTrace.ToString()}");
+                Trace.WriteLine($"ERROR SENDING: {ex.Message}\n\n{ex.StackTrace.ToString()}");
                 throw;
             }
         }

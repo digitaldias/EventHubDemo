@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using Domain;
 using Microsoft.ServiceBus.Messaging;
-using Domain;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Subscriber
 {
@@ -18,7 +19,7 @@ namespace Subscriber
 
         public Task OpenAsync(PartitionContext context)
         {
-            Console.WriteLine("Context Lease Opened on Partition " + context.Lease.PartitionId + " owned by " + context.Lease.Owner);
+            Trace.WriteLine("Lease Opened on Partition " + context.Lease.PartitionId + ", owned by " + context.Lease.Owner);
             return Task.FromResult<object>(null);
         }
 
@@ -27,7 +28,10 @@ namespace Subscriber
             foreach(var message in messages)
             {                
                 var importantMeasure = ImportantMeasure.FromByteArray(message.GetBytes());
-                Console.WriteLine($"[Partition {context.Lease.PartitionId}] {DateTime.Now.ToString("HH:mm:ss")}: {importantMeasure.ImportantValue.ToString("0.00")}");
+
+                // Do something with the measure here, like storing it in a table somewhere...
+
+                Trace.WriteLine($"[Partition {context.Lease.PartitionId}] {DateTime.Now.ToString("HH:mm:ss")}: {importantMeasure.ImportantValue.ToString("0.00")}");
             }            
             await context.CheckpointAsync();
         }
