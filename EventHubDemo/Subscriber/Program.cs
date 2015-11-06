@@ -9,10 +9,10 @@ namespace Subscriber
 {
     class Program
     {
-        private static string _eventHubConnectionString = "Endpoint=sb://bigdatahub.servicebus.windows.net/;SharedAccessKeyName=processor;SharedAccessKey=DkNixCV7QUfwAsL1STbUnov6LBEEOj5zGQmJJ+MLuwE=";
-        private static string _eventHubPath = "bigdataeventhub";
-        private static string _storageConnectionString = "DefaultEndpointsProtocol=https;AccountName=lotsofdata;AccountKey=QoKJgHZGujg4t9hU1QOsV1OyYRT9mlqpvdkm48dCECQ/EHKUsrXpof/g4DLdCLJLMgyrYcHkMCjE/QoNiuq+lw==";
-        private static string _consumerGroupName = "bigdataconsumergroup";
+        private static string _eventHubConnectionString = "[YOUR EVENT HUB READER CONNECTIONTRING]";
+        private static string _eventHubPath = "[NAME OF YOUR EVENTHUB]";
+        private static string _storageConnectionString = "[YOUR AZURE STORAGE CONNECTION STRING]";
+        private static string _consumerGroupName = "[NAME OF THE CONSUMER GROUP]";
 
         private static EventProcessorHost _host;
 
