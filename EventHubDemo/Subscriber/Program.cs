@@ -1,4 +1,4 @@
-﻿using Microsoft.ServiceBus.Messaging;
+﻿using Microsoft.Azure.EventHubs.Processor;
 using System;
 using System.Diagnostics;
 

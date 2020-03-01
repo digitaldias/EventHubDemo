@@ -1,5 +1,6 @@
 ﻿using Domain;
-using Microsoft.ServiceBus.Messaging;
+using Microsoft.Azure.EventHubs;
+using Microsoft.Azure.EventHubs.Processor;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,7 +12,7 @@ namespace Subscriber
     {
         public async Task CloseAsync(PartitionContext context, CloseReason reason)
         {
-           if(reason == CloseReason.Shutdown)
+            if (reason == CloseReason.Shutdown)
             {
                 await context.CheckpointAsync();
             }
@@ -23,16 +24,20 @@ namespace Subscriber
             return Task.FromResult<object>(null);
         }
 
+        public Task ProcessErrorAsync(PartitionContext context, Exception error)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task ProcessEventsAsync(PartitionContext context, IEnumerable<EventData> messages)
         {
-            foreach(var message in messages)
-            {                
-                var importantMeasure = ImportantMeasure.FromByteArray(message.GetBytes());
+            foreach (var message in messages)
+            {
+                var importantMeasure = ImportantMeasure.FromByteArray(message.Body.Array);
 
                 // Do something with the measure here, like storing it in a table somewhere...
-
                 Trace.WriteLine($"[Partition {context.Lease.PartitionId}] {DateTime.Now.ToString("HH:mm:ss")}: {importantMeasure.ImportantValue.ToString("0.00")}");
-            }            
+            }
             await context.CheckpointAsync();
         }
     }

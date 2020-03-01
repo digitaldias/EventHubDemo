@@ -1,5 +1,5 @@
 ﻿using Domain;
-using Microsoft.ServiceBus.Messaging;
+using Microsoft.Azure.EventHubs;
 using System;
 using System.Diagnostics;
 
@@ -22,7 +22,7 @@ namespace Transmitter
         {
 
             InitializeEventHubClient();
-            var degree = 0;            
+            var degree = 0;
 
             while (true)
             {
@@ -41,7 +41,7 @@ namespace Transmitter
             Trace.WriteLine("Initializing EventHub Client");
             try
             {
-                _eventHubClient = EventHubClient.CreateFromConnectionString(_eventHubConnectionstring, _eventHubPath);
+                _eventHubClient = EventHubClient.CreateFromConnectionString(_eventHubConnectionstring);
                 Trace.WriteLine("Initialization complete");
             }
             catch (Exception ex)
@@ -58,7 +58,7 @@ namespace Transmitter
 
             try
             {
-                _eventHubClient.Send(eventData);
+                _eventHubClient.SendAsync(eventData);
             }
             catch (Exception ex)
             {
