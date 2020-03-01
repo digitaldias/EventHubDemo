@@ -5,9 +5,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace Domain
 {
     [Serializable]
-    public class ImportantMeasure
-    {
-        public double ImportantValue { get; set; }
+    public class RandomMessage
+    {        
+        public Participant Participant { get; set; }
 
         public byte[] AsByteArray()
         {
@@ -19,7 +19,7 @@ namespace Domain
             }
         }
 
-        public static ImportantMeasure FromByteArray(byte[] array)
+        public static RandomMessage FromByteArray(byte[] array)
         {
             var binaryFormatter = new BinaryFormatter();
 
@@ -28,7 +28,7 @@ namespace Domain
                 memoryStream.Write(array, 0, array.Length);
                 memoryStream.Seek(0, SeekOrigin.Begin);
 
-                return binaryFormatter.Deserialize(memoryStream) as ImportantMeasure;
+                return binaryFormatter.Deserialize(memoryStream) as RandomMessage;
             }
         }
     }

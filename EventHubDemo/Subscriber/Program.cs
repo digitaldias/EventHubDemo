@@ -6,18 +6,19 @@ namespace Subscriber
 {
     class Program
     {
-        private static string _eventHubConnectionString = "[YOUR EVENT HUB READER CONNECTIONTRING]";
-        private static string _eventHubPath = "[NAME OF YOUR EVENTHUB]";
-        private static string _storageConnectionString = "[YOUR AZURE STORAGE CONNECTION STRING]";
-        private static string _consumerGroupName = "[NAME OF THE CONSUMER GROUP]";
+        private static string _eventHubConnectionString = "<Reader Connection String>";
+        private static string _eventHubPath             = "<Name of your eventhub>";
+        private static string _storageConnectionString  = "<Your  storage connection string>";
+        private static string _containerName            = "<Container name for your evenhub>";
+        private static string _consumerGroupName        = "$Default"; // Essentially a "cursor" in database terms
 
-        private static EventProcessorHost _host;
+        private static EventProcessorHost _eventProcessorHost;
 
         static void Main(string[] args)
         {
             InitializeEventProcessorHost();
 
-            _host.RegisterEventProcessorAsync<MyOwnEventProcessor>().Wait();
+            _eventProcessorHost.RegisterEventProcessorAsync<MyOwnEventProcessor>().Wait();
 
 #if DEBUG
             Trace.WriteLine("Press any key to end the program");
@@ -33,7 +34,7 @@ namespace Subscriber
 
             try
             {
-                _host = new EventProcessorHost(hostName, _eventHubPath, _consumerGroupName, _eventHubConnectionString, _storageConnectionString);
+                _eventProcessorHost = new EventProcessorHost(_eventHubPath, _consumerGroupName,_eventHubConnectionString, _storageConnectionString, _containerName);
                 Trace.WriteLine($"{hostName} created successfully.");
             }
             catch (Exception ex)
