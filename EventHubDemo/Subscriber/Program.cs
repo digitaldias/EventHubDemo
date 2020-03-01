@@ -19,7 +19,6 @@ namespace Subscriber
             InitializeEventProcessorHost();
 
             _eventProcessorHost.RegisterEventProcessorAsync<MyOwnEventProcessor>().Wait();
-
 #if DEBUG
             Trace.WriteLine("Press any key to end the program");
             Console.ReadKey();
@@ -29,7 +28,6 @@ namespace Subscriber
         private static void InitializeEventProcessorHost()
         {
             Trace.WriteLine("Initializing EventProcessor Host");
-
             string hostName = CreateUniqueHostname();
 
             try

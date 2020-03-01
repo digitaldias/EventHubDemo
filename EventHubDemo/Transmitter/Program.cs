@@ -96,7 +96,6 @@ namespace Transmitter
 
             var random = new RandomGenerator((int)DateTime.Now.Ticks);
             
-
             var participants = Builder<Participant>
                 .CreateListOfSize(numberOfMessages)
                 .All()
