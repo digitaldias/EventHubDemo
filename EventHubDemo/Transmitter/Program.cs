@@ -109,7 +109,7 @@ namespace Transmitter
                     .With(o => o.greeting = Faker.Company.CatchPhrase())                    
                     .With(o => o.email = Faker.Internet.Email())
                     .With(o => o.phone = Faker.Phone.Number())
-                    .With(o => o.address = $"{Faker.Address.StreetName()} {Faker.Address.StreetAddress()}, {Faker.Address.ZipCode()} {Faker.Address.City()}")
+                    .With(o => o.address = $"{Faker.Address.StreetAddress()}, {Faker.Address.ZipCode()} {Faker.Address.City()}")
                     .With(o => o.friends = Builder<Friend>.CreateListOfSize(random.Next(1, 15))
                         .All()
                             .With(f => f.id = random.Next(10000, 1000000))
