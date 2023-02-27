@@ -1,18 +1,19 @@
-﻿using Domain;
-using Domain.Utilities;
-using FizzWare.NBuilder;
-using Microsoft.Azure.EventHubs;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Azure.Messaging.EventHubs;
+using Azure.Messaging.EventHubs.Producer;
+using Domain;
+using Domain.Utilities;
+using FizzWare.NBuilder;
 
 namespace Transmitter
 {
     class Program
     {
         private static string         _eventHubConnectionstring = "<Transmitter EventHub Connection String>";
-        private static EventHubClient _eventHubClient;
+        private static EventHubProducerClient _producer = default!;
 
         /// <summary>
         /// Transmits a value between 0 and 5000 to the Azure EventHub.
@@ -47,7 +48,7 @@ namespace Transmitter
             {
                 // Convert all messages to EventData objects
                 var sendableMessages = messages.Select(m => new EventData(m.AsByteArray()));
-                AsyncUtil.RunSync(() => _eventHubClient.SendAsync(sendableMessages));
+                AsyncUtil.RunSync(() => _producer.SendAsync(sendableMessages));
             }
             catch(Exception ex)
             {
@@ -61,13 +62,13 @@ namespace Transmitter
             Trace.WriteLine("Initializing EventHub Client");
             try
             {
-                _eventHubClient = EventHubClient.CreateFromConnectionString(_eventHubConnectionstring);
+                _producer = new(_eventHubConnectionstring, "<EventHub name>");
 
                 Trace.WriteLine("Initialization complete");
             }
             catch (Exception ex)
             {
-                Trace.WriteLine($"Initialization Failed: {ex.Message}\n\n{ex.StackTrace.ToString()}");
+                Trace.WriteLine($"Initialization Failed: {ex.Message}\n\n{ex.StackTrace}");
                 throw;
             }
 
@@ -75,16 +76,18 @@ namespace Transmitter
 
         private static void SendAsIndividualMessages(RandomMessage message)
         {
-            var eventData = new EventData(message.AsByteArray());
+            var messageBytes = System.Text.Json.JsonSerializer.Serialize(message);
+            var eventData = new EventData(new BinaryData(messageBytes));
 
             try
             {
-                AsyncUtil.RunSync(() => _eventHubClient.SendAsync(eventData));
+
+                AsyncUtil.RunSync(() => _producer.SendAsync(new[] { eventData }));
 
             }
             catch (Exception ex)
             {
-                Trace.WriteLine($"ERROR SENDING: {ex.Message}\n\n{ex.StackTrace.ToString()}");
+                Trace.WriteLine($"ERROR SENDING: {ex.Message}\n\n{ex.StackTrace}");
                 throw;
             }
         }
@@ -100,28 +103,28 @@ namespace Transmitter
                 .CreateListOfSize(numberOfMessages)
                 .All()
                     .With(o => o._id = Guid.NewGuid().ToString())
-                    .With(o => o.isActive = random.Boolean())
-                    .With(o => o.age = random.Next(18, 67))
-                    .With(o => o.company = Faker.Company.Name())
-                    .With(o => o.about = Faker.Lorem.Sentence(15))
-                    .With(o => o.registered = random.Next(DateTime.Now.AddYears(-60), DateTime.Now.AddMonths(-3)).ToString())
-                    .With(o => o.tags = Faker.Lorem.Words(random.Next(1, 5)).ToArray())
-                    .With(o => o.greeting = Faker.Company.CatchPhrase())
-                    .With(o => o.email = Faker.Internet.Email())
-                    .With(o => o.phone = Faker.Phone.Number())
-                    .With(o => o.address = $"{Faker.Address.StreetAddress()}, {Faker.Address.ZipCode()} {Faker.Address.City()}")
-                    .With(o => o.friends = Builder<Friend>.CreateListOfSize(random.Next(1, 15))
+                    .With(o => o.IsActive = random.Boolean())
+                    .With(o => o.Age = random.Next(18, 67))
+                    .With(o => o.Company = Faker.Company.Name())
+                    .With(o => o.About = Faker.Lorem.Sentence(15))
+                    .With(o => o.Registered = random.Next(DateTime.Now.AddYears(-60), DateTime.Now.AddMonths(-3)).ToString())
+                    .With(o => o.Tags = Faker.Lorem.Words(random.Next(1, 5)).ToArray())
+                    .With(o => o.Greeting = Faker.Company.CatchPhrase())
+                    .With(o => o.Email = Faker.Internet.Email())
+                    .With(o => o.Phone = Faker.Phone.Number())
+                    .With(o => o.Address = $"{Faker.Address.StreetAddress()}, {Faker.Address.ZipCode()} {Faker.Address.City()}")
+                    .With(o => o.Friends = Builder<Friend>.CreateListOfSize(random.Next(1, 15))
                         .All()
-                            .With(f => f.id = random.Next(10000, 1000000))
-                            .With(f => f.name = Faker.Name.FullName())
+                            .With(f => f.Id = random.Next(10000, 1000000))
+                            .With(f => f.Name = Faker.Name.FullName())
                         .Build()
                         .ToArray())
-                    .With(o => o.name = Builder<Name>.CreateNew()
-                        .With(n => n.first = Faker.Name.First())
-                        .With(n => n.last = Faker.Name.Last())
+                    .With(o => o.Name = Builder<Name>.CreateNew()
+                        .With(n => n.First = Faker.Name.First())
+                        .With(n => n.Last = Faker.Name.Last())
                         .Build())
                 .Random(numberOfMessages/5)
-                    .With(o => o.email = "pedro@digitaldias.com")
+                    .With(o => o.Email = "pedro@digitaldias.com")
                 .Build();
 
             return participants.Select(participant => new RandomMessage { Participant = participant });

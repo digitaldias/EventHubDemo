@@ -7,7 +7,7 @@ namespace Domain.Utilities
     public static class AsyncUtil
     {
         private static readonly TaskFactory _taskFactory = new
-            TaskFactory(CancellationToken.None,
+        (CancellationToken.None,
                         TaskCreationOptions.None,
                         TaskContinuationOptions.None,
                         TaskScheduler.Default);

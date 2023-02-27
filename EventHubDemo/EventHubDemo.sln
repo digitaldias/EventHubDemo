@@ -1,13 +1,13 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Subscriber", "Subscriber\Subscriber.csproj", "{FEC30DBB-F7C6-41CE-A003-7CEDA0A62FB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Subscriber", "Subscriber\Subscriber.csproj", "{FEC30DBB-F7C6-41CE-A003-7CEDA0A62FB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{A375B216-461E-412D-82E4-B640A8725423}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{A375B216-461E-412D-82E4-B640A8725423}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transmitter", "Transmitter\Transmitter.csproj", "{FCE78F67-13E0-4EFA-AB79-16E5F05A4082}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transmitter", "Transmitter\Transmitter.csproj", "{FCE78F67-13E0-4EFA-AB79-16E5F05A4082}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
