@@ -11,11 +11,11 @@ namespace Transmitter
 {
     class Program
     {
-        private static string         _eventHubConnectionstring = "<Transmitter EventHub Connection String>";        
+        private static string         _eventHubConnectionstring = "<Transmitter EventHub Connection String>";
         private static EventHubClient _eventHubClient;
 
         /// <summary>
-        /// Transmits a value between 0 and 5000 to the Azure EventHub. 
+        /// Transmits a value between 0 and 5000 to the Azure EventHub.
         /// The values are made by following a Sinus-curve for good looks, in case you want to connect them to a live PowerBI dashboard
         /// </summary>
         /// <param name="args"></param>
@@ -23,7 +23,7 @@ namespace Transmitter
         {
 
             var messages = CreateMessages(100);
-            InitializeEventHubClient();            
+            InitializeEventHubClient();
             var stopWatch = Stopwatch.StartNew();
 
             while (true)
@@ -46,7 +46,7 @@ namespace Transmitter
             try
             {
                 // Convert all messages to EventData objects
-                var sendableMessages = messages.Select(m => new EventData(m.AsByteArray()));                
+                var sendableMessages = messages.Select(m => new EventData(m.AsByteArray()));
                 AsyncUtil.RunSync(() => _eventHubClient.SendAsync(sendableMessages));
             }
             catch(Exception ex)
@@ -58,11 +58,11 @@ namespace Transmitter
 
         private static void InitializeEventHubClient()
         {
-            Trace.WriteLine("Initializing EventHub Client");            
+            Trace.WriteLine("Initializing EventHub Client");
             try
             {
                 _eventHubClient = EventHubClient.CreateFromConnectionString(_eventHubConnectionstring);
-                
+
                 Trace.WriteLine("Initialization complete");
             }
             catch (Exception ex)
@@ -78,9 +78,9 @@ namespace Transmitter
             var eventData = new EventData(message.AsByteArray());
 
             try
-            {                
-                AsyncUtil.RunSync(() => _eventHubClient.SendAsync(eventData));   
-                                
+            {
+                AsyncUtil.RunSync(() => _eventHubClient.SendAsync(eventData));
+
             }
             catch (Exception ex)
             {
@@ -95,7 +95,7 @@ namespace Transmitter
                 throw new ArgumentException("The minimum amount of messages is 5");
 
             var random = new RandomGenerator((int)DateTime.Now.Ticks);
-            
+
             var participants = Builder<Participant>
                 .CreateListOfSize(numberOfMessages)
                 .All()
@@ -106,7 +106,7 @@ namespace Transmitter
                     .With(o => o.about = Faker.Lorem.Sentence(15))
                     .With(o => o.registered = random.Next(DateTime.Now.AddYears(-60), DateTime.Now.AddMonths(-3)).ToString())
                     .With(o => o.tags = Faker.Lorem.Words(random.Next(1, 5)).ToArray())
-                    .With(o => o.greeting = Faker.Company.CatchPhrase())                    
+                    .With(o => o.greeting = Faker.Company.CatchPhrase())
                     .With(o => o.email = Faker.Internet.Email())
                     .With(o => o.phone = Faker.Phone.Number())
                     .With(o => o.address = $"{Faker.Address.StreetAddress()}, {Faker.Address.ZipCode()} {Faker.Address.City()}")
@@ -119,7 +119,7 @@ namespace Transmitter
                     .With(o => o.name = Builder<Name>.CreateNew()
                         .With(n => n.first = Faker.Name.First())
                         .With(n => n.last = Faker.Name.Last())
-                        .Build())                    
+                        .Build())
                 .Random(numberOfMessages/5)
                     .With(o => o.email = "pedro@digitaldias.com")
                 .Build();
